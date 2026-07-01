@@ -1728,5 +1728,28 @@ attachPhoneMask(modalForm.phone);
 })();
 
 </script>
+  <script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const url = 'https://script.google.com/macros/s/AKfycbzXgsU670EV2p-d5BzMUl0fEsaQrkzxvl2lIrDWpwkapo1FH0z09l6IRdzuFpiM1kj1zw/exec'; 
+
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: document.getElementById('fname').value,
+      phone: document.getElementById('fphone').value
+    })
+  }).then(() => {
+    alert('Дякуємо! Заявка відправлена.');
+    document.getElementById('contactForm').reset();
+  }).catch(err => {
+    alert('Помилка відправки. Спробуйте пізніше.');
+  });
+});
+</script>
+
 </body>
 </html>
