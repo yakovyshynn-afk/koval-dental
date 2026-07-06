@@ -1613,12 +1613,30 @@ function clearFieldError(formEl){
   if(err) err.remove();
 }
 
-async function sendLeadToTelegram(name, phone, comment){
-  const text =
-    '🔔 Нова заявка з сайту!\n' +
-    '👤 Ім\'я: ' + name + '\n' +
-    '📞 Телефон: ' + phone +
-    (comment ? ('\n💬 Коментар: ' + comment) : '');
+async function sendLeadToTelegram(name, phone, comment) {
+  const response = await fetch(
+    "https://koval-dental-api.sadlyaste.workers.dev",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        message: comment
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error("Помилка відправки заявки");
+  }
+
+  return data;
+}
 
   // Real-world testing showed fetch() (even with mode:'no-cors') is unreliable here:
   // Safari's tracking-prevention can silently swallow the cross-origin request
