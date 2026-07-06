@@ -1638,27 +1638,6 @@ async function sendLeadToTelegram(name, phone, comment) {
   return data;
 }
 
-  // Real-world testing showed fetch() (even with mode:'no-cors') is unreliable here:
-  // Safari's tracking-prevention can silently swallow the cross-origin request
-  // without ever throwing a JS error, so the site thinks it worked while nothing
-  // was actually delivered. Telegram's sendMessage endpoint also accepts a plain
-  // GET with query-string parameters (confirmed directly), so instead of fetch/XHR
-  // we use the same "beacon" trick tracking pixels have relied on for decades:
-  // requesting the URL as if it were an <img> src. Image loads are handled by a
-  // completely different browser subsystem than fetch/XHR and are not subject to
-  // the same CORS/tracking-prevention blocking, which makes delivery far more
-  // dependable for a static, backend-less site. The response isn't a real image,
-  // so the 'error' event will always fire — that's expected and harmless, we
-  // simply don't act on it either way (there's nothing meaningful to read back).
-  const url = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage'
-    + '?chat_id=' + encodeURIComponent(TELEGRAM_CHAT_ID)
-    + '&text=' + encodeURIComponent(text);
-  const beacon = new Image();
-  beacon.onerror = function(){}; // expected — Telegram's JSON reply isn't a valid image
-  beacon.src = url;
-}
-
-// Wires up validation + submit-lock + Telegram send + success/error UI for a given form.
 function setupLeadForm(formEl, successEl, opts){
   opts = opts || {};
   const submitBtn = formEl.querySelector('button[type="submit"]');
